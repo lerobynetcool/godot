@@ -997,8 +997,8 @@ void ParticleProcessMaterial::_update_shader() {
 		code += "			v -= physics_params.damping * DELTA;\n";
 	} else {
 		code += "			// Realistic friction formula. We assume the mass of a particle to be 0.05 kg.\n";
-		code += "			float damp = v * v * physics_params.damping * 0.05 * DELTA;\n";
-		code += "			v -= damp;\n";
+		code += "			float force_along_v = - v * v * physics_params.damping * 0.05;\n";
+		code += "			v += force_along_v * DELTA;\n";
 	}
 	code += "			if (v < 0.0) {\n";
 	code += "				VELOCITY = vec3(0.0);\n";
