@@ -993,13 +993,11 @@ void ParticleProcessMaterial::_update_shader() {
 	code += "		// Copied from previous version.\n";
 	code += "		if (physics_params.damping > 0.0) {\n";
 	if (!particle_flags[PARTICLE_FLAG_DAMPING_AS_FRICTION]) {
-		code += "			float v = length(VELOCITY);\n";
-		code += "			v -= physics_params.damping * DELTA;\n";
-		code += "			if (v < 0.0) {\n";
-		code += "				VELOCITY = vec3(0.0);\n";
-		code += "			} else {\n";
-		code += "				VELOCITY = normalize(VELOCITY) * v;\n";
-		code += "			}\n";
+		code += "			// force_friction_along_v = - physics_params.damping * 0.05 \n";
+		code += "			VELOCITY = normalize(VELOCITY) * max(0., length(VELOCITY) - physics_params.damping * DELTA);\n";
+	// } else { // given the provided two cases, maybe we can add this one too as an option.
+	// 	code += "			// force_friction_along_v = - v * physics_params.damping * 0.05 \n";
+	// 	code += "			VELOCITY *= exp( - physics_params.damping * 0.05 * DELTA );\n";
 	} else {
 		code += "			// force_friction_along_v = - v * v * physics_params.damping * 0.05 \n";
 		code += "			VELOCITY /= 1. + length(VELOCITY) * physics_params.damping * 0.05 * DELTA;\n";
