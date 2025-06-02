@@ -996,7 +996,7 @@ void ParticleProcessMaterial::_update_shader() {
 	if (!particle_flags[PARTICLE_FLAG_DAMPING_AS_FRICTION]) {
 		code += "			v -= physics_params.damping * DELTA;\n";
 	} else {
-		code += "			// Realistic friction formula. We assume the mass of a particle to be 0.05 kg.\n";
+		code += "			// Realistic friction formula.\n";
 		code += "			float force_along_v = - v * v * physics_params.damping * 0.05;\n";
 		code += "			v += force_along_v * DELTA;\n";
 	}
