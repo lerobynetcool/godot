@@ -992,19 +992,18 @@ void ParticleProcessMaterial::_update_shader() {
 	code += "	{\n";
 	code += "		// Copied from previous version.\n";
 	code += "		if (physics_params.damping > 0.0) {\n";
-	code += "			float v = length(VELOCITY);\n";
 	if (!particle_flags[PARTICLE_FLAG_DAMPING_AS_FRICTION]) {
+		code += "			float v = length(VELOCITY);\n";
 		code += "			v -= physics_params.damping * DELTA;\n";
+		code += "			if (v < 0.0) {\n";
+		code += "				VELOCITY = vec3(0.0);\n";
+		code += "			} else {\n";
+		code += "				VELOCITY = normalize(VELOCITY) * v;\n";
+		code += "			}\n";
 	} else {
-		code += "			// Realistic friction formula.\n";
-		code += "			float force_along_v = - v * v * physics_params.damping * 0.05;\n";
-		code += "			v += force_along_v * DELTA;\n";
+		code += "			// force_friction_along_v = - v * v * physics_params.damping * 0.05 \n";
+		code += "			VELOCITY /= 1. + length(VELOCITY) * physics_params.damping * 0.05 * DELTA;\n";
 	}
-	code += "			if (v < 0.0) {\n";
-	code += "				VELOCITY = vec3(0.0);\n";
-	code += "			} else {\n";
-	code += "				VELOCITY = normalize(VELOCITY) * v;\n";
-	code += "			}\n";
 	code += "		}\n";
 	code += "	}\n\n";
 
